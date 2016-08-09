@@ -1,0 +1,5 @@
+puppet-module-puppet-collectd (4.3.0-0calibre1~bpo8+1) calibre9; urgency=low
+
+  * Initial release
+
+ -- Benoit Boccard <benoit-externe.boccard@edf.fr>  Tue, 09 Aug 2016 09:28:48 +0100

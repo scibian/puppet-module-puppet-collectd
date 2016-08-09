@@ -1,0 +1,22 @@
+Source: puppet-module-puppet-collectd
+Section: admin
+Priority: optional
+Maintainer: Benoit Boccard <benoit-externe.boccard@edf.fr>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://forge.puppet.com/puppet/collectd
+
+Package: puppet-module-puppet-collectd
+Architecture: all
+Depends: puppet-common,
+         puppet-module-puppetlabs-concat,
+         puppet-module-puppetlabs-stdlib,
+         ${misc:Depends}
+Description: Puppet module collectd
+ Puppet lets you centrally manage every important aspect of your system
+ using a cross-platform specification language that manages all the
+ separate elements normally aggregated in different files, like users,
+ cron jobs, and hosts, along with obviously discrete elements like
+ packages, services, and files.
+ .
+ This is a puppet module to manage collectd configs.

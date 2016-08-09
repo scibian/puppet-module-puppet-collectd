@@ -1,0 +1,5 @@
+metadata.json usr/share/puppet/modules.available/puppet-collectd
+manifests     usr/share/puppet/modules.available/puppet-collectd
+templates     usr/share/puppet/modules.available/puppet-collectd
+lib           usr/share/puppet/modules.available/puppet-collectd
+files         usr/share/puppet/modules.available/puppet-collectd

@@ -1,3 +1,9 @@
+puppet-module-puppet-collectd (4.3.0-0sci8u1) scibian8; urgency=medium
+
+  * Scibian8 rebuild.
+
+ -- Thomas Hamel <thomas-externe.hamel@edf.fr>  Wed, 13 Dec 2017 11:39:36 +0100
+
 puppet-module-puppet-collectd (4.3.0-0calibre1~bpo8+1) calibre9; urgency=low
 
   * Initial release

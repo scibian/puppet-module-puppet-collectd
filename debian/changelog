@@ -1,3 +1,9 @@
+puppet-module-puppet-collectd (4.3.0-0sci9u1) scibian9; urgency=medium
+
+  * Scibian9 rebuild.
+
+ -- Ibrahim M-MAKA <ibrahim-externe.m-maka@edf.fr>  Wed, 11 Apr 2018 15:24:42 +0200
+
 puppet-module-puppet-collectd (4.3.0-0sci8u1) scibian8; urgency=medium
 
   * Scibian8 rebuild.

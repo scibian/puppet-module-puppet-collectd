@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/scibian/puppet-module-puppet-collectd
 
 Package: puppet-module-puppet-collectd
 Architecture: all
-Depends: puppet-common,
+Depends: puppet4 | puppet-common,
          puppet-module-puppetlabs-concat,
          puppet-module-puppetlabs-stdlib,
          ${misc:Depends}

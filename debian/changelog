@@ -1,3 +1,9 @@
+puppet-module-puppet-collectd (4.3.0-0sci8u2) scibian8; urgency=medium
+
+  * Add dependency on puppet4.
+
+ -- Benoit Boccard <benoit-externe.boccard@edf.fr>  Thu, 14 Feb 2019 16:31:27 +0100
+
 puppet-module-puppet-collectd (4.3.0-0sci8u1) scibian8; urgency=medium
 
   * Scibian8 rebuild.

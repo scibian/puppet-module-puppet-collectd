@@ -11,6 +11,17 @@
 <%     if params['timeout'] -%>
     Timeout <%= params['timeout'] %>
 <%     end -%>
+<%     if params['password'] -%>
+    Password "<%= params['password'] %>"
+<%     end -%>
+<%     if params['queries'] -%>
+<%       params['queries'].each do |instance,qparams| -%>
+    <Query "<%= qparams['query'] -%>">
+      Type "<%= qparams['type'] -%>"
+      Instance "<%= instance -%>"
+    </Query>
+<%       end -%>
+<%     end -%>
   </Node>
 <%   end -%>
 </Plugin>

@@ -1,27 +1,22 @@
 #
 define collectd::plugin::tail::file (
-  $filename,
-  $instance,
-  $matches,
+  Stdlib::Absolutepath $filename,
+  String $instance,
+  Array[Hash] $matches,
   $ensure = 'present',
 ) {
-  include ::collectd::params
-  include ::collectd::plugin::tail
+  include collectd
+  include collectd::plugin::tail
 
-  $conf_dir = $collectd::params::plugin_conf_dir
-
-  validate_absolute_path($filename)
-  validate_string($instance)
-  validate_array($matches)
-  validate_hash($matches[0])
+  $conf_dir = $collectd::plugin_conf_dir
 
   file { "${name}.conf":
     ensure  => $ensure,
     path    => "${conf_dir}/tail-${name}.conf",
-    mode    => '0644',
-    owner   => 'root',
-    group   => $collectd::params::root_group,
+    mode    => $collectd::config_mode,
+    owner   => $collectd::config_owner,
+    group   => $collectd::config_group,
     content => template('collectd/tail-file.conf.erb'),
-    notify  => Service['collectd'],
+    notify  => Service[$collectd::service_name],
   }
 }

@@ -1,18 +1,14 @@
 # https://collectd.org/wiki/index.php/Plugin:Write_Riemann
 class collectd::plugin::write_riemann (
-  $ensure           = present,
-  $manage_package   = $collectd::manage_package,
-  $riemann_host     = 'localhost',
-  $riemann_port     = 5555,
-  $protocol         = 'UDP',
-  $store_rates      = false,
-  $always_append_ds = false,
-  $interval         = undef,
+  Array[Collectd::Write_riemann::Node] $nodes,
+  Enum['present', 'absent'] $ensure     = 'present',
+  Boolean $manage_package               = $collectd::manage_package,
+  Array[String[1]] $tags                = [],
+  Hash[String[1],String[1]] $attributes = {},
 ) {
-  validate_bool($store_rates)
-  validate_bool($always_append_ds)
+  include collectd
 
-  if $::osfamily == 'Redhat' {
+  if $facts['os']['family'] == 'RedHat' {
     if $manage_package {
       package { 'collectd-write_riemann':
         ensure => $ensure,
@@ -20,9 +16,8 @@ class collectd::plugin::write_riemann (
     }
   }
 
-  collectd::plugin {'write_riemann':
-    ensure   => $ensure,
-    content  => template('collectd/plugin/write_riemann.conf.erb'),
-    interval => $interval,
+  collectd::plugin { 'write_riemann':
+    ensure  => $ensure,
+    content => epp('collectd/plugin/write_riemann.conf.epp'),
   }
 }

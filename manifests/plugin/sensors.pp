@@ -1,22 +1,27 @@
 # https://collectd.org/wiki/index.php/Plugin:Sensors
 class collectd::plugin::sensors (
-  $ensure           = present,
-  $manage_package   = $collectd::manage_package,
+  $ensure           = 'present',
+  $manage_package   = undef,
   $sensorconfigfile = undef,
-  $sensor           = undef,
+  $sensors          = undef,
   $ignoreselected   = undef,
   $interval         = undef,
+  Optional[Array[String]] $package_install_options = undef
 ) {
+  include collectd
 
-  if $::osfamily == 'Redhat' {
-    if $manage_package {
+  $_manage_package = pick($manage_package, $collectd::manage_package)
+
+  if $facts['os']['family'] == 'RedHat' {
+    if $_manage_package {
       package { 'collectd-sensors':
-        ensure => $ensure,
+        ensure          => $ensure,
+        install_options => $package_install_options,
       }
     }
   }
 
-  collectd::plugin {'sensors':
+  collectd::plugin { 'sensors':
     ensure   => $ensure,
     content  => template('collectd/plugin/sensors.conf.erb'),
     interval => $interval,

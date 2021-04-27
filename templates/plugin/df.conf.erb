@@ -1,4 +1,7 @@
 <Plugin df>
+<% @devices.each do |dev| -%>
+  Device "<%= dev %>"
+<% end -%>
 <% @mountpoints.each do |mp| -%>
   MountPoint "<%= mp %>"
 <% end -%>
@@ -8,8 +11,10 @@
   IgnoreSelected <%= @ignoreselected %>
   ReportByDevice <%= @reportbydevice %>
   ReportInodes <%= @reportinodes %>
+<% if scope.lookupvar('collectd::collectd_version_real') and (scope.function_versioncmp([scope.lookupvar('collectd::collectd_version_real'), '5.5']) < 0) -%>
   ReportReserved <%= @reportreserved %>
-<% if @collectd_version and (scope.function_versioncmp([@collectd_version, '5.4']) >= 0) -%>
+<% end -%>
+<% if scope.lookupvar('collectd::collectd_version_real') and (scope.function_versioncmp([scope.lookupvar('collectd::collectd_version_real'), '5.4']) >= 0) -%>
   ValuesAbsolute <%= @valuesabsolute %>
   ValuesPercentage <%= @valuespercentage %>
 <% end -%>

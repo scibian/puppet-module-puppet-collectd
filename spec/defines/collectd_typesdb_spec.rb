@@ -1,30 +1,38 @@
 require 'spec_helper'
 
-describe 'collectd::typesdb', :type => :define do
-  let :facts do
-    {
-      :osfamily       => 'Debian',
-      :id             => 'root',
-      :concat_basedir => tmpfilename('collectd-typesdb'),
-      :path           => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-    }
-  end
+describe 'collectd::typesdb', type: :define do
+  on_supported_os(baseline_os_hash).each do |os, facts|
+    context "on #{os} " do
+      let :facts do
+        facts
+      end
 
-  context 'without any types' do
-    let(:title) { '/etc/collectd/types.db' }
+      let :pre_condition do
+        'include collectd'
+      end
 
-    it 'should contain empty types.db' do
-      should contain_concat('/etc/collectd/types.db')
-      should contain_file('/etc/collectd/types.db').with_mode('0640')
-    end
-  end
+      context 'without any types' do
+        let(:title) { '/etc/collectd/types.db' }
 
-  context 'with a different file mode' do
-    let(:title) { '/etc/collectd/types.db' }
-    let(:params) { { 'mode' => '0644' } }
+        it 'contains empty types.db' do
+          is_expected.to contain_concat('/etc/collectd/types.db').with(
+            ensure: 'present',
+            path: '/etc/collectd/types.db'
+          ).with_mode('0640')
+        end
+      end
 
-    it 'should contain file with different mode' do
-      should contain_file('/etc/collectd/types.db').with_mode('0644')
+      context 'with a different file mode' do
+        let(:title) { '/etc/collectd/types.db' }
+        let(:params) { { 'mode' => '0644' } }
+
+        it 'contains file with different mode' do
+          is_expected.to contain_concat('/etc/collectd/types.db').with(
+            ensure: 'present',
+            path: '/etc/collectd/types.db'
+          ).with_mode('0644')
+        end
+      end
     end
   end
 end

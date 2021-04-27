@@ -1,21 +1,19 @@
-class collectd::install (
-  $package_ensure          = $collectd::package_ensure,
-  $package_name            = $collectd::package_name,
-  $package_provider        = $collectd::package_provider,
-  $package_install_options = $collectd::params::package_install_options,
-  $manage_package          = $collectd::manage_package,
-) {
+# @summary installs collectd
+# @api private
+class collectd::install {
+  assert_private()
 
-  if $package_install_options != undef {
-    validate_array($package_install_options)
+  if $collectd::manage_package {
+    package { $collectd::package_name:
+      ensure          => $collectd::package_ensure,
+      provider        => $collectd::package_provider,
+      install_options => $collectd::package_install_options,
+    }
   }
 
-  if $manage_package {
-    package { $package_name:
-      ensure          => $package_ensure,
-      name            => $package_name,
-      provider        => $package_provider,
-      install_options => $package_install_options,
+  if $collectd::utils and  ( $facts['os']['family'] == 'Debian' or ( $facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['major'],'8') >= 0 )) {
+    package { 'collectd-utils':
+      ensure => $collectd::package_ensure,
     }
   }
 }

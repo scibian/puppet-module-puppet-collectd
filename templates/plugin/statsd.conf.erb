@@ -17,8 +17,11 @@
 <% unless @deletesets.nil? -%>
   Deletesets <%= @deletesets %>
 <% end -%>
-<% if @timerpercentile -%>
-  TimerPercentile <%= @timerpercentile %>
+<% unless @countersum.nil? -%>
+  CounterSum <%= @countersum %>
+<% end -%>
+<% @timerpercentile.each do |percentile| -%>
+  TimerPercentile <%= percentile %>
 <% end -%>
 <% if @timerupper -%>
   TimerUpper <%= @timerupper %>

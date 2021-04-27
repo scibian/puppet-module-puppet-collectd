@@ -1,25 +1,21 @@
 # database allows you to create <Database> blocks with the same name of database,
 #
 define collectd::plugin::dbi::database (
-  $driver,
-  $ensure       = 'present',
-  $host         = undef,
-  $databasename = $name,
-  $driveroption = {},
-  $selectdb     = undef,
-  $query        = [],
-){
-  include ::collectd::params
-  include ::collectd::plugin::dbi
+  String $driver,
+  String $ensure                          = 'present',
+  Optional[String] $host                  = undef,
+  String $databasename                    = $name,
+  Hash $driveroption                      = {},
+  Optional[String] $selectdb              = undef,
+  Array $query                            = [],
+  Optional[Integer[1]] $db_query_interval = undef,
+) {
+  include collectd
+  include collectd::plugin::dbi
 
-  validate_string($driver)
-  validate_hash($driveroption)
-  validate_array($query)
-
-  concat::fragment{"collectd_plugin_dbi_conf_db_${title}":
-    ensure  => $ensure,
+  concat::fragment { "collectd_plugin_dbi_conf_db_${title}":
     order   => '50',
-    target  => "${collectd::params::plugin_conf_dir}/dbi-config.conf",
+    target  => "${collectd::plugin_conf_dir}/dbi-config.conf",
     content => template('collectd/plugin/dbi/database.conf.erb'),
   }
 }

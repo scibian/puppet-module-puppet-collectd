@@ -1,8 +1,10 @@
 # https://collectd.org/wiki/index.php/Plugin:ZFS_ARC
 class collectd::plugin::zfs_arc (
-  $ensure = present,
+  $ensure = 'present',
 ) {
-  collectd::plugin {'zfs_arc':
+  include collectd
+
+  collectd::plugin { 'zfs_arc':
     ensure => $ensure,
   }
 }

@@ -1,3 +1,11 @@
+puppet-module-puppet-collectd (12.2.0-1sci9u1) scibian9; urgency=medium
+
+  * New upstream version 12.2.0
+  * add dependance to puppet5 instead of puppet
+  * ignore debian/files  right now
+
+ -- Kwame AMEDODJI <kwame-externe.amedodji@edf.fr>  Tue, 27 Apr 2021 12:19:34 +0200
+
 puppet-module-puppet-collectd (4.3.0-0sci9u1) scibian9; urgency=medium
 
   * Scibian9 rebuild.

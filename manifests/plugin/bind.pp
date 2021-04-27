@@ -1,31 +1,21 @@
 # https://collectd.org/wiki/index.php/Plugin:BIND
 class collectd::plugin::bind (
-  $url,
-  $ensure         = present,
-  $manage_package = $collectd::manage_package,
-  $memorystats    = true,
-  $opcodes        = true,
-  $parsetime      = false,
-  $qtypes         = true,
-  $resolverstats  = false,
-  $serverstats    = true,
-  $zonemaintstats = true,
-  $views          = [],
-  $interval       = undef,
+  Stdlib::Httpurl $url,
+  Enum['present', 'absent'] $ensure  = 'present',
+  Boolean $manage_package            = $collectd::manage_package,
+  Boolean $memorystats               = true,
+  Boolean $opcodes                   = true,
+  Boolean $parsetime                 = false,
+  Boolean $qtypes                    = true,
+  Boolean $resolverstats             = false,
+  Boolean $serverstats               = true,
+  Boolean $zonemaintstats            = true,
+  Array[Collectd::Bind::View] $views = [],
+  Optional[Integer[1]] $interval     = undef,
 ) {
+  include collectd
 
-  validate_bool(
-    $memorystats,
-    $opcodes,
-    $parsetime,
-    $qtypes,
-    $resolverstats,
-    $serverstats,
-    $zonemaintstats,
-  )
-  validate_array($views)
-
-  if $::osfamily == 'Redhat' {
+  if $facts['os']['family'] == 'RedHat' {
     if $manage_package {
       package { 'collectd-bind':
         ensure => $ensure,
@@ -33,7 +23,7 @@ class collectd::plugin::bind (
     }
   }
 
-  collectd::plugin {'bind':
+  collectd::plugin { 'bind':
     ensure   => $ensure,
     content  => template('collectd/plugin/bind.conf.erb'),
     interval => $interval,

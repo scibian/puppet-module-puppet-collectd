@@ -1,16 +1,18 @@
 # See http://collectd.org/documentation/manpages/collectd-perl.5.shtml
 class collectd::plugin::perl (
-  $ensure           = present,
-  $manage_package   = $collectd::manage_package,
+  $ensure           = 'present',
+  $manage_package   = undef,
   $interval         = undef,
   $order            = 20
-)
-{
-  include ::collectd::params
-  $conf_dir = $collectd::params::plugin_conf_dir
+) {
+  include collectd
 
-  if $::osfamily == 'Redhat' {
-    if $manage_package {
+  $_manage_package = pick($manage_package, $collectd::manage_package)
+
+  $conf_dir = $collectd::plugin_conf_dir
+
+  if $facts['os']['family'] == 'RedHat' {
+    if $_manage_package {
       package { 'collectd-perl':
         ensure => $ensure,
       }
@@ -27,9 +29,8 @@ class collectd::plugin::perl (
 
   file { "${conf_dir}/perl":
     ensure => directory,
-    mode   => '0755',
-    owner  => $collectd::params::root_user,
-    group  => $collectd::params::root_group,
+    mode   => $collectd::plugin_conf_dir_mode,
+    owner  => $collectd::config_owner,
+    group  => $collectd::config_group,
   }
 }
-

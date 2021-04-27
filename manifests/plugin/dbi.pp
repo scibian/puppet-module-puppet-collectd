@@ -1,16 +1,29 @@
 # https://collectd.org/wiki/index.php/Plugin:DBI
 class collectd::plugin::dbi (
-  $ensure    = present,
-  $databases = { },
-  $queries   = { },
-  $packages  = undef,
-  $interval  = undef,
+  $ensure         = 'present',
+  $databases      = {},
+  $queries        = {},
+  $packages       = undef,
+  $interval       = undef,
+  $manage_package = undef,
 ) {
-  include ::collectd::params
+  include collectd
 
-  if $::osfamily == 'Redhat' {
-    package { 'collectd-dbi':
-      ensure => $ensure,
+  $_manage_package = pick($manage_package, $collectd::manage_package)
+
+  $_databases_defaults = {
+    'ensure' => $ensure,
+  }
+
+  $_queries_defaults   = {
+    'ensure' => $ensure,
+  }
+
+  if $facts['os']['family'] == 'RedHat' {
+    if $_manage_package {
+      package { 'collectd-dbi':
+        ensure => $ensure,
+      }
     }
   }
 
@@ -21,33 +34,41 @@ class collectd::plugin::dbi (
     }
   }
 
-  collectd::plugin {'dbi':
+  collectd::plugin { 'dbi':
     ensure   => $ensure,
     interval => $interval,
   }
 
-  concat{"${collectd::params::plugin_conf_dir}/dbi-config.conf":
+  concat { "${collectd::plugin_conf_dir}/dbi-config.conf":
     ensure         => $ensure,
-    mode           => '0640',
-    owner          => 'root',
-    group          => $collectd::params::root_group,
-    notify         => Service['collectd'],
+    mode           => $collectd::config_mode,
+    owner          => $collectd::config_owner,
+    group          => $collectd::config_group,
+    notify         => Service[$collectd::service_name],
     ensure_newline => true,
   }
-  concat::fragment{'collectd_plugin_dbi_conf_header':
+
+  concat::fragment { 'collectd_plugin_dbi_conf_header':
     order   => '00',
     content => '<Plugin dbi>',
-    target  => "${collectd::params::plugin_conf_dir}/dbi-config.conf",
-  }
-  concat::fragment{'collectd_plugin_dbi_conf_footer':
-    order   => '99',
-    content => '</Plugin>',
-    target  => "${collectd::params::plugin_conf_dir}/dbi-config.conf",
+    target  => "${collectd::plugin_conf_dir}/dbi-config.conf",
   }
 
-  $defaults = {
-    'ensure' => $ensure,
+  concat::fragment { 'collectd_plugin_dbi_conf_footer':
+    order   => '99',
+    content => '</Plugin>',
+    target  => "${collectd::plugin_conf_dir}/dbi-config.conf",
   }
-  create_resources(collectd::plugin::dbi::database, $databases, $defaults)
-  create_resources(collectd::plugin::dbi::query, $queries, $defaults)
+
+  $databases.each |String $resource, Hash $attributes| {
+    collectd::plugin::dbi::database { $resource:
+      * => $_databases_defaults + $attributes,
+    }
+  }
+
+  $queries.each |String $resource, Hash $attributes| {
+    collectd::plugin::dbi::query { $resource:
+      * => $_queries_defaults + $attributes,
+    }
+  }
 }

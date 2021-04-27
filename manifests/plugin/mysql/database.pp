@@ -1,43 +1,36 @@
 #
 define collectd::plugin::mysql::database (
-  $ensure             = 'present',
-  $database           = $name,
-  $host               = 'UNSET',
-  $username           = 'UNSET',
-  $password           = 'UNSET',
-  $port               = '3306',
-  $masterstats        = false,
-  $slavestats         = false,
-  $socket             = undef,
-  $innodbstats        = undef,
-  $slavenotifications = undef,
+  Enum['present', 'absent'] $ensure    = 'present',
+  String $database                     = $name,
+  String $host                         = 'UNSET',
+  String $username                     = 'UNSET',
+  String $password                     = 'UNSET',
+  Stdlib::Port $port                   = 3306,
+  Boolean $masterstats                 = false,
+  Boolean $slavestats                  = false,
+  Optional[String] $socket             = undef,
+  Optional[Boolean] $innodbstats       = undef,
+  # FIXME(sileht): Should be boolean
+  Optional[String] $slavenotifications = undef,
+  Optional[Boolean] $wsrepstats        = undef,
+  Optional[String] $aliasname          = undef,
+  Optional[Integer] $connecttimeout    = undef,
+  Optional[String] $sslkey             = undef,
+  Optional[String] $sslcert            = undef,
+  Optional[String] $sslca              = undef,
+  Optional[String] $sslcapath          = undef,
+  Optional[String] $sslcipher          = undef,
 ) {
-  include ::collectd::params
-  include ::collectd::plugin::mysql
-
-  $conf_dir = $collectd::params::plugin_conf_dir
-
-  validate_string($database, $host, $username, $password, $port)
-  validate_bool($masterstats, $slavestats)
-  if $socket {
-    validate_string($socket)
-  }
-
-  if $innodbstats != undef {
-    validate_bool($innodbstats)
-  }
-
-  if $slavenotifications != undef {
-    validate_bool($slavenotifications)
-  }
+  include collectd
+  include collectd::plugin::mysql
 
   file { "${name}.conf":
     ensure  => $ensure,
-    path    => "${conf_dir}/mysql-${name}.conf",
-    mode    => '0640',
-    owner   => 'root',
-    group   => $collectd::params::root_group,
+    path    => "${collectd::plugin_conf_dir}/mysql-${name}.conf",
+    mode    => $collectd::config_mode,
+    owner   => $collectd::config_owner,
+    group   => $collectd::config_group,
     content => template('collectd/mysql-database.conf.erb'),
-    notify  => Service['collectd'],
+    notify  => Service[$collectd::service_name],
   }
 }

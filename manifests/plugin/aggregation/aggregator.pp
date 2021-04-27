@@ -1,34 +1,34 @@
 #
 define collectd::plugin::aggregation::aggregator (
-  $ensure            = 'present',
-  $host              = undef,
-  $plugin            = undef,
-  $plugininstance    = undef,
-  $type              = undef,
-  $typeinstance      = undef,
-  $sethost           = undef,
-  $setplugin         = undef,
-  $setplugininstance = undef,
-  $settypeinstance   = undef,
-  $groupby           = [],
-  $calculatesum      = undef,
-  $calculatenum      = undef,
-  $calculateaverage  = undef,
-  $calculateminimum  = undef,
-  $calculatemaximum  = undef,
-  $calculatestddev   = undef,
+  String $ensure                          = 'present',
+  Optional[String] $host                  = undef,
+  Optional[String] $plugin                = undef,
+  Optional[Integer[0]] $plugininstance    = undef,
+  Optional[String] $agg_type              = undef,
+  Optional[String] $typeinstance          = undef,
+  Optional[String] $sethost               = undef,
+  Optional[String] $setplugin             = undef,
+  Optional[Integer[0]] $setplugininstance = undef,
+  Optional[String] $settypeinstance       = undef,
+  Array[String] $groupby                  = [],
+  Optional[Boolean] $calculatesum         = undef,
+  Optional[Boolean] $calculatenum         = undef,
+  Optional[Boolean] $calculateaverage     = undef,
+  Optional[Boolean] $calculateminimum     = undef,
+  Optional[Boolean] $calculatemaximum     = undef,
+  Optional[Boolean] $calculatestddev      = undef,
 ) {
-  include ::collectd::params
-  include ::collectd::plugin::aggregation
+  include collectd
+  include collectd::plugin::aggregation
 
-  $conf_dir = $collectd::params::plugin_conf_dir
+  $conf_dir = $collectd::plugin_conf_dir
 
   file { "${conf_dir}/aggregator-${name}.conf":
     ensure  => $ensure,
-    mode    => '0640',
-    owner   => 'root',
-    group   => $collectd::params::root_group,
+    mode    => $collectd::config_mode,
+    owner   => $collectd::config_owner,
+    group   => $collectd::config_group,
     content => template('collectd/plugin/aggregation-aggregator.conf.erb'),
-    notify  => Service['collectd'],
+    notify  => Service[$collectd::service_name],
   }
 }

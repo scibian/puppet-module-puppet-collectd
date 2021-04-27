@@ -1,25 +1,34 @@
 #
 class collectd::plugin::curl (
-  $ensure         = present,
-  $manage_package = $collectd::manage_package,
+  $ensure         = 'present',
+  $manage_package = undef,
   $interval       = undef,
-  $pages          = { },
+  $pages          = {},
 ) {
+  include collectd
 
-  if $::osfamily == 'Redhat' {
-    if $manage_package {
+  $_manage_package = pick($manage_package, $collectd::manage_package)
+
+  if $facts['os']['family'] == 'RedHat' {
+    if $_manage_package {
       package { 'collectd-curl':
         ensure => $ensure,
       }
     }
   }
 
-  collectd::plugin {'curl':
+  collectd::plugin { 'curl':
     ensure   => $ensure,
     interval => $interval,
   }
+
   $defaults = {
     'ensure' => $ensure,
   }
-  create_resources(collectd::plugin::curl::page, $pages, $defaults)
+
+  $pages.each |String $resource, Hash $attributes| {
+    collectd::plugin::curl::page { $resource:
+      * => $defaults + $attributes,
+    }
+  }
 }

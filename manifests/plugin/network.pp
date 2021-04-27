@@ -1,29 +1,39 @@
 # https://collectd.org/wiki/index.php/Plugin:Network
 class collectd::plugin::network (
-  $ensure        = present,
-  $timetolive    = undef,
-  $maxpacketsize = undef,
-  $forward       = undef,
-  $interval      = undef,
-  $reportstats   = undef,
-  $listeners     = { },
-  $servers       = { },
+  Enum['present', 'absent'] $ensure          = 'present',
+  Optional[Pattern[/[0-9]+/]] $timetolive    = undef,
+  Optional[Pattern[/[0-9]+/]] $maxpacketsize = undef,
+  Optional[Boolean] $forward                 = undef,
+  Optional[Integer[1]] $interval             = undef,
+  Optional[Boolean] $reportstats             = undef,
+  Hash $listeners                            = {},
+  Hash $servers                              = {},
 ) {
-  if $timetolive {
-    validate_re($timetolive, '[0-9]+')
-  }
-  if $maxpacketsize {
-    validate_re($maxpacketsize, '[0-9]+')
+  include collectd
+
+  $listeners_defaults = {
+    'ensure' => $ensure,
   }
 
-  collectd::plugin {'network':
+  $servers_defaults   = {
+    'ensure' => $ensure,
+  }
+
+  collectd::plugin { 'network':
     ensure   => $ensure,
     content  => template('collectd/plugin/network.conf.erb'),
     interval => $interval,
   }
-  $defaults = {
-    'ensure' => $ensure,
+
+  $listeners.each |String $resource, Hash $attributes| {
+    collectd::plugin::network::listener { $resource:
+      * => $listeners_defaults + $attributes,
+    }
   }
-  create_resources(collectd::plugin::network::listener, $listeners, $defaults)
-  create_resources(collectd::plugin::network::server, $servers, $defaults)
+
+  $servers.each |String $resource, Hash $attributes| {
+    collectd::plugin::network::server { $resource:
+      * => $servers_defaults + $attributes,
+    }
+  }
 }

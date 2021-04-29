@@ -19,3 +19,4 @@ Puppetfile.lock
 .yardoc/
 Guardfile
 debian/files
+/.pc/

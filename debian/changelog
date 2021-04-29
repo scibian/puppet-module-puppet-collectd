@@ -1,3 +1,9 @@
+puppet-module-puppet-collectd (12.2.0-1sci9u3) scibian9; urgency=medium
+
+  * move patches under debian directory
+
+ -- Kwame AMEDODJI <kwame-externe.amedodji@edf.fr>  Thu, 29 Apr 2021 17:41:09 +0200
+
 puppet-module-puppet-collectd (12.2.0-1sci9u2) scibian9; urgency=medium
 
   * add tasks & types entries in install files

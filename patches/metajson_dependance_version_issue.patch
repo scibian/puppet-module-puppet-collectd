@@ -1,0 +1,29 @@
+--- a/metadata.json
++++ b/metadata.json
+@@ -10,23 +10,15 @@
+   "dependencies": [
+     {
+       "name": "puppetlabs-apt",
+-      "version_requirement": ">= 2.2.0 < 8.0.0"
++      "version_requirement": ">= 2.2.0 < 8.0.3"
+     },
+     {
+       "name": "puppetlabs/concat",
+-      "version_requirement": ">= 4.1.0 < 7.0.0"
++      "version_requirement": ">= 4.1.0 < 7.0.3"
+     },
+     {
+       "name": "puppetlabs/stdlib",
+-      "version_requirement": ">= 4.25.0 < 7.0.0"
+-    },
+-    {
+-      "name": "puppet-epel",
+-      "version_requirement": ">= 3.0.0 < 4.0.0"
+-    },
+-    {
+-      "name": "puppetlabs-python_task_helper",
+-      "version_requirement": ">= 0.2.0 < 1.0.0"
++      "version_requirement": ">= 4.25.0 < 7.0.3"
+     }
+   ],
+   "operatingsystem_support": [
